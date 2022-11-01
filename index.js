@@ -36,9 +36,27 @@ async function run(){
             const service = await serviceCollection.findOne(query)
             res.send(service)
         })
+        app.get('/orders', async(req, res) =>{
+            console.log(req.query)
+            let query = {}
+            if(req.query.email){
+                query = {
+                    email: req.query.email
+                }
+            }
+            const cursor = orderCollection.find(query)
+            const orders = await cursor.toArray()
+            res.send(orders)
+        })
         app.post('/orders', async(req, res)=>{
             const order = req.body
             const result = await orderCollection.insertOne(order)
+            res.send(result)
+        })
+        app.delete('/orders/:id', async(req, res) =>{
+            const id = req.params.id
+            const quary = {_id: ObjectId(id) }
+            const result = await orderCollection.deleteOne(quary)
             res.send(result)
         })
     }
